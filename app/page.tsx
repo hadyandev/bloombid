@@ -7,7 +7,6 @@ import { AuctionGrid } from '@/components/auction-grid'
 import { MintNFTModal } from '@/components/mint-nft-modal'
 import { CreateAuctionModal } from '@/components/create-auction-modal'
 import { BidModal } from '@/components/bid-modal'
-import { DebugInfo } from '@/components/debug-info'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useContract } from '@/hooks/useContract'
 import { useNFT } from '@/hooks/useNFT'
@@ -131,7 +130,6 @@ export default function Home() {
       
       <main className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <DebugInfo />
           <Tabs defaultValue="all-nfts" className="space-y-6">
             <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5">
               <TabsTrigger value="all-nfts">
