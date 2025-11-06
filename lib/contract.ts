@@ -153,6 +153,13 @@ export const BLOOM_NFT_ABI = [
     "inputs": [],
     "outputs": [{"name": "", "type": "uint256"}],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "creators",
+    "inputs": [{"name": "tokenId", "type": "uint256"}],
+    "outputs": [{"name": "", "type": "address"}],
+    "stateMutability": "view"
   }
 ] as const
 
@@ -315,13 +322,19 @@ export async function getNFTMetadata(client: any, tokenId: bigint) {
     params: [tokenId],
   })
 
+  const creator = await readContract({
+    contract,
+    method: 'function creators(uint256 tokenId) view returns (address)',
+    params: [tokenId],
+  })
+
   const isInAuction = await readContract({
     contract,
     method: 'function isInAuction(uint256 tokenId) view returns (bool)',
     params: [tokenId],
   })
 
-  return { uri, owner, isInAuction }
+  return { uri, owner, creator, isInAuction }
 }
 
 export async function getNFTsByOwner(client: any, ownerAddress: string): Promise<bigint[]> {

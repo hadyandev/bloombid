@@ -162,7 +162,9 @@ export default function Home() {
               </div>
               <NFTGrid
                 nfts={filteredNFTs}
+                userAddress={account?.address}
                 loading={nftLoading}
+                onCreateAuction={handleCreateAuction}
               />
             </TabsContent>
 
@@ -173,6 +175,7 @@ export default function Home() {
               </div>
               <NFTGrid
                 nfts={myNFTs}
+                userAddress={account?.address}
                 loading={nftLoading}
                 onCreateAuction={handleCreateAuction}
               />

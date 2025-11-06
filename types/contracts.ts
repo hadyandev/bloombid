@@ -1,6 +1,7 @@
 export interface NFT {
   tokenId: number
   owner: string
+  creator: string
   ipfsHash: string
   imageUrl: string
   isInAuction: boolean

@@ -29,7 +29,7 @@ export function useNFT() {
     if (!client) return null
 
     try {
-      const { uri, owner, isInAuction } = await getNFTMetadata(client, tokenId)
+      const { uri, owner, creator, isInAuction } = await getNFTMetadata(client, tokenId)
       const metadata = await fetchNFTMetadata(uri)
       
       const imageUrl = metadata?.image 
@@ -47,6 +47,7 @@ export function useNFT() {
       return {
         tokenId: Number(tokenId),
         owner,
+        creator,
         ipfsHash: uri,
         imageUrl,
         isInAuction,

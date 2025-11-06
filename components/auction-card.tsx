@@ -5,7 +5,7 @@ import { AuctionDisplay } from '@/types/contracts'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Hammer, Clock, Trophy, X } from 'lucide-react'
+import { Hammer, Clock, Trophy, X, User } from 'lucide-react'
 import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
 
@@ -15,6 +15,11 @@ interface AuctionCardProps {
   onBid?: (auction: AuctionDisplay) => void
   onEnd?: (auction: AuctionDisplay) => void
   onCancel?: (auction: AuctionDisplay) => void
+}
+
+const formatAddress = (address: string) => {
+  if (!address) return ''
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
 export function AuctionCard({ auction, userAddress, onBid, onEnd, onCancel }: AuctionCardProps) {
@@ -95,6 +100,11 @@ export function AuctionCard({ auction, userAddress, onBid, onEnd, onCancel }: Au
           <p className="text-sm text-muted-foreground truncate">
             {auction.nft?.metadata?.description || 'No description'}
           </p>
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <User className="w-4 h-4" />
+          <span className="font-mono">{formatAddress(auction.seller)}</span>
         </div>
 
         <div className="space-y-2">

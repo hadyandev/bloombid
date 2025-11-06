@@ -38,6 +38,7 @@ contract BloomNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable, ERC721
 
     mapping(uint256 => Auction) public auctions; // tokenId => Auction
     mapping(uint256 => bool) public isInAuction;  // tokenId => bool
+    mapping(uint256 => address) public creators;
 
     event NFTMinted(uint256 indexed tokenId, address indexed creator, string ipfsHash);
     event AuctionCreated(uint256 indexed tokenId, address indexed seller, uint256 startingBid, uint256 endTime);
@@ -72,12 +73,15 @@ contract BloomNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable, ERC721
         require(msg.value >= biayaAdmin, "Mohon masukan biaya admin minimal 0.001 ether");
         
         accumulatedAdminFees += msg.value; 
+        
 
         uint256 id = _nextTokenId;
         _nextTokenId++;
         
         _safeMint(address(this), id);
         _setTokenURI(id, ipfsHash);
+
+        creators[id] = msg.sender;
         
         emit NFTMinted(id, msg.sender, ipfsHash);
         return id;
@@ -135,6 +139,9 @@ contract BloomNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable, ERC721
 
         emit BidPlaced(tokenId, msg.sender, msg.value);
     }
+
+
+    
 
     // End auction and transfer NFT to winner
     function endAuction(uint256 tokenId) external nonReentrant {
