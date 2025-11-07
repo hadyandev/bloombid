@@ -38,7 +38,7 @@ export function MarketplaceHeader({ onMintClick }: MarketplaceHeaderProps) {
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              Mint NFT
+              Buat NFT
             </Button>
           )}
           <LoginButton chain={liskSepolia} />

@@ -130,7 +130,7 @@ export default function Home() {
                   Welcome to BloomBid
                 </h2>
                 <p className="text-xl text-muted-foreground">
-                Premium NFT Auction Marketplace
+                  Premium NFT Auction Marketplace
                 </p>
                 <p className="text-muted-foreground max-w-md mx-auto pt-2">
                   Connect wallet lo buat mulai mint NFT, create auction, atau bid di marketplace yang paling kece!
@@ -140,7 +140,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 w-full max-w-4xl">
                 <div className="p-6 rounded-2xl bg-card/80 backdrop-blur-sm border-2 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1">
                   <div className="text-4xl mb-4">🎨</div>
-                  <h3 className="font-bold text-lg mb-2">Mint NFT</h3>
+                  <h3 className="font-bold text-lg mb-2">Buat NFT</h3>
                   <p className="text-sm text-muted-foreground">Bikin dan upload karya seni digital lo</p>
                 </div>
                 

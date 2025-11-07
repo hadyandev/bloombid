@@ -56,7 +56,7 @@ export function useNFT() {
         metadata: metadata || undefined
       }
     } catch (err) {
-      console.error(`Error loading NFT ${tokenId}:`, err)
+      // console.error(`Error loading NFT ${tokenId}:`, err)
       return null
     }
   }

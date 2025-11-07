@@ -72,7 +72,7 @@ export function useAuction() {
             auctionsData.push(displayAuction)
           }
         } catch (err) {
-          console.error(`Error loading auction for token ${tokenId}:`, err)
+          // console.error(`Error loading auction for token ${tokenId}:`, err)
         }
       }
       

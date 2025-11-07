@@ -41,7 +41,8 @@ export function BidModal({ open, onOpenChange, auction, onSuccess }: BidModalPro
       return
     }
 
-    const bidValue = parseFloat(bidAmount)
+    const normalizedBidAmount = bidAmount.replace(',', '.')
+    const bidValue = parseFloat(normalizedBidAmount)
     const minValue = parseFloat(minBid)
 
     if (!bidAmount || bidValue < minValue) {
@@ -56,11 +57,11 @@ export function BidModal({ open, onOpenChange, auction, onSuccess }: BidModalPro
     setLoading(true)
 
     try {
-      await placeBid(client, account, BigInt(auction.tokenId), bidAmount)
+      await placeBid(client, account, BigInt(auction.tokenId), normalizedBidAmount)
 
       toast({
         title: 'Bid berhasil!',
-        description: `Lo udah bid ${bidAmount} ETH nih!`
+        description: `Lo udah bid ${normalizedBidAmount} ETH nih!`
       })
 
       setBidAmount('')
