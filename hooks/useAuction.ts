@@ -9,6 +9,7 @@ export function useAuction() {
   const { client, isConnected } = useContract()
   const [auctions, setAuctions] = useState<AuctionDisplay[]>([])
   const [loading, setLoading] = useState(false)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const convertAuctionToDisplay = (auction: Auction): AuctionDisplay => {
@@ -22,10 +23,12 @@ export function useAuction() {
     }
   }
 
-  const fetchAuctions = useCallback(async () => {
+  const fetchAuctions = useCallback(async (showLoading = true) => {
     if (!client) return
 
-    setLoading(true)
+    if (showLoading) {
+      setLoading(true)
+    }
     setError(null)
 
     try {
@@ -74,13 +77,18 @@ export function useAuction() {
       }
       
       setAuctions(auctionsData)
+      if (isInitialLoad) {
+        setIsInitialLoad(false)
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to fetch auctions')
       console.error('Error fetching auctions:', err)
     } finally {
-      setLoading(false)
+      if (showLoading) {
+        setLoading(false)
+      }
     }
-  }, [client])
+  }, [client, isInitialLoad])
 
   const getActiveAuctions = useCallback(() => {
     const now = Math.floor(Date.now() / 1000)
@@ -107,11 +115,15 @@ export function useAuction() {
 
   useEffect(() => {
     if (isConnected) {
-      fetchAuctions()
-      const interval = setInterval(fetchAuctions, 30000)
+      fetchAuctions(true)
+      
+      const interval = setInterval(() => {
+        fetchAuctions(false)
+      }, 30000)
+      
       return () => clearInterval(interval)
     }
-  }, [isConnected, fetchAuctions])
+  }, [isConnected])
 
   return {
     auctions,
@@ -119,9 +131,8 @@ export function useAuction() {
     endedAuctions: getEndedAuctions(),
     getMyAuctions,
     getMyBids,
-    loading,
+    loading: isInitialLoad ? loading : false,
     error,
     refetch: fetchAuctions
   }
 }
-

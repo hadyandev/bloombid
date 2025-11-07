@@ -27,6 +27,7 @@ export function CreateAuctionModal({ open, onOpenChange, nft, onSuccess }: Creat
   const [duration, setDuration] = useState('86400')
 
   const durationOptions = [
+    { label: '3 Minutes', value: '180' },
     { label: '1 Hour', value: '3600' },
     { label: '6 Hours', value: '21600' },
     { label: '12 Hours', value: '43200' },

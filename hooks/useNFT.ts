@@ -10,6 +10,7 @@ export function useNFT() {
   const [myNFTs, setMyNFTs] = useState<NFT[]>([])
   const [allNFTs, setAllNFTs] = useState<NFT[]>([])
   const [loading, setLoading] = useState(false)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchNFTMetadata = async (ipfsUrl: string): Promise<NFTMetadata | null> => {
@@ -60,10 +61,12 @@ export function useNFT() {
     }
   }
 
-  const fetchMyNFTs = useCallback(async () => {
+  const fetchMyNFTs = useCallback(async (showLoading = true) => {
     if (!isConnected || !account?.address || !client) return
 
-    setLoading(true)
+    if (showLoading) {
+      setLoading(true)
+    }
     setError(null)
 
     try {
@@ -75,18 +78,25 @@ export function useNFT() {
       )
       
       setMyNFTs(nftsData.filter((nft): nft is NFT => nft !== null))
+      if (isInitialLoad) {
+        setIsInitialLoad(false)
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to fetch NFTs')
       console.error('Error fetching my NFTs:', err)
     } finally {
-      setLoading(false)
+      if (showLoading) {
+        setLoading(false)
+      }
     }
-  }, [isConnected, account?.address, client])
+  }, [isConnected, account?.address, client, isInitialLoad])
 
-  const fetchAllNFTs = useCallback(async () => {
+  const fetchAllNFTs = useCallback(async (showLoading = true) => {
     if (!client) return
 
-    setLoading(true)
+    if (showLoading) {
+      setLoading(true)
+    }
     setError(null)
 
     try {
@@ -97,7 +107,9 @@ export function useNFT() {
       if (total === 0) {
         console.log('Belum ada NFT yang di-mint')
         setAllNFTs([])
-        setLoading(false)
+        if (showLoading) {
+          setLoading(false)
+        }
         return
       }
       
@@ -106,27 +118,31 @@ export function useNFT() {
       )
       
       setAllNFTs(nftsData.filter((nft): nft is NFT => nft !== null))
+      if (isInitialLoad) {
+        setIsInitialLoad(false)
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to fetch all NFTs')
       console.error('Error fetching all NFTs:', err)
     } finally {
-      setLoading(false)
+      if (showLoading) {
+        setLoading(false)
+      }
     }
-  }, [client])
+  }, [client, isInitialLoad])
 
   useEffect(() => {
     if (isConnected) {
-      fetchMyNFTs()
+      fetchMyNFTs(true)
     }
-  }, [isConnected, fetchMyNFTs])
+  }, [isConnected])
 
   return {
     myNFTs,
     allNFTs,
-    loading,
+    loading: isInitialLoad ? loading : false,
     error,
     refetch: fetchMyNFTs,
     fetchAllNFTs
   }
 }
-
