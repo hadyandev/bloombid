@@ -29,7 +29,7 @@ export function MarketplaceHeader({ onMintClick }: MarketplaceHeaderProps) {
           {isConnected && onMintClick && (
             <Button onClick={onMintClick} variant="outline">
               <Sparkles className="w-4 h-4 mr-2" />
-              Mint NFT
+              Buat NFT
             </Button>
           )}
           <LoginButton chain={liskSepolia} />
