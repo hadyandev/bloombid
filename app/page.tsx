@@ -39,15 +39,16 @@ export default function Home() {
 
   const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || ''
 
-  const filteredNFTs = allNFTs.filter(nft => 
-    nft.owner.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
-  )
+  // Tampilkan semua NFT di marketplace
+  const filteredNFTs = allNFTs
 
   useEffect(() => {
     if (isConnected && client) {
+      console.log('🔄 Fetching all NFTs and refreshing auctions...')
       fetchAllNFTs()
+      refetchAuctions() // Tambahkan ini untuk memastikan auction data juga ter-refresh
     }
-  }, [isConnected, client, fetchAllNFTs])
+  }, [isConnected, client, fetchAllNFTs, refetchAuctions])
 
   const handleCreateAuction = (nft: NFT) => {
     setSelectedNFT(nft)
@@ -104,6 +105,7 @@ export default function Home() {
   }
 
   const handleModalSuccess = () => {
+    console.log('🔄 Modal success - refreshing all data...')
     refetchNFTs()
     refetchAuctions()
     fetchAllNFTs()

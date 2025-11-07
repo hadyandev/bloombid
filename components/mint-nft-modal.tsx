@@ -143,7 +143,7 @@ export function MintNFTModal({ open, onOpenChange, onSuccess }: MintNFTModalProp
       
       uploadFormData.append('created_at', new Date().toISOString())
 
-      const uploadResponse = await fetch('http://localhost:3000/api/nft/upload', {
+      const uploadResponse = await fetch('/api/nft/upload', {
         method: 'POST',
         body: uploadFormData,
       })
