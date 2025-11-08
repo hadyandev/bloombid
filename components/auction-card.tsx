@@ -144,6 +144,11 @@ export function AuctionCard({ auction, userAddress, showConnectPrompt, onBid, on
           >
             🔐 Connect Wallet to Bid
           </Button>
+        ) : showConnectPrompt === false ? (
+          // Landing page mode - tidak menampilkan button action apapun
+          <div className="flex-1 text-center text-sm text-muted-foreground py-2">
+            Connect wallet to interact with auctions
+          </div>
         ) : (
           <>
             {isActive && !isOwner && onBid && (

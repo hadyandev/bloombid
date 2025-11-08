@@ -196,7 +196,7 @@ export default function Home() {
                   nfts={allNFTs}
                   userAddress={account?.address}
                   loading={nftLoading}
-                  showConnectPrompt={true}
+                  showConnectPrompt={false}
                   onCreateAuction={handleCreateAuction}
                 />
               </TabsContent>
@@ -212,7 +212,7 @@ export default function Home() {
                   auctions={activeAuctions}
                   loading={auctionLoading}
                   userAddress={account?.address}
-                  showConnectPrompt={true}
+                  showConnectPrompt={false}
                   onBid={handleBid}
                   onEnd={handleEndAuction}
                   onCancel={handleCancelAuction}

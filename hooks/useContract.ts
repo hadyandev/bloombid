@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useActiveAccount, usePanna } from 'panna-sdk'
 import { BLOOM_NFT_CONTRACT_ADDRESS } from '@/lib/contract'
 
@@ -11,6 +11,16 @@ import { BLOOM_NFT_CONTRACT_ADDRESS } from '@/lib/contract'
 export function useContract() {
   const activeAccount = useActiveAccount()
   const { client } = usePanna()
+
+  // Debug logging untuk tracking state
+  useEffect(() => {
+    console.log('🔍 Wallet State:', {
+      hasClient: !!client,
+      hasAccount: !!activeAccount,
+      accountAddress: activeAccount?.address,
+      timestamp: new Date().toISOString()
+    })
+  }, [client, activeAccount])
 
   const contractInfo = useMemo(() => {
     // Pastikan client dan account dalam state yang konsisten
