@@ -7,13 +7,16 @@ import { AuctionGrid } from '@/components/auction-grid'
 import { MintNFTModal } from '@/components/mint-nft-modal'
 import { CreateAuctionModal } from '@/components/create-auction-modal'
 import { BidModal } from '@/components/bid-modal'
+import { BackToTop } from '@/components/back-to-top'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 import { useContract } from '@/hooks/useContract'
 import { useNFT } from '@/hooks/useNFT'
 import { useAuction } from '@/hooks/useAuction'
 import { useToast } from '@/hooks/use-toast'
 import { NFT, AuctionDisplay } from '@/types/contracts'
 import { endAuction, cancelAuction } from '@/lib/contract'
+import { LoginButton, liskSepolia } from 'panna-sdk'
 
 export default function Home() {
   const { client, account, isConnected } = useContract()
@@ -323,6 +326,7 @@ export default function Home() {
             </footer>
           </div>
         </main>
+        <BackToTop />
       </>
     )
   }
@@ -455,6 +459,8 @@ export default function Home() {
           </Tabs>
         </div>
       </main>
+
+      <BackToTop />
 
       <MintNFTModal
         open={mintModalOpen}
