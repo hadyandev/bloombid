@@ -45,13 +45,14 @@ export default function Home() {
   // Tampilkan semua NFT di marketplace
   const filteredNFTs = allNFTs
 
+  // Load data dengan proper dependency management
   useEffect(() => {
-    if (isConnected && client) {
-      console.log('🔄 Fetching all NFTs and refreshing auctions...')
+    if (client) {
+      console.log('🔄 Fetching NFTs and auctions...', { isConnected, hasAccount: !!account })
       fetchAllNFTs()
-      refetchAuctions() // Tambahkan ini untuk memastikan auction data juga ter-refresh
+      refetchAuctions()
     }
-  }, [isConnected, client, fetchAllNFTs, refetchAuctions])
+  }, [client]) // Hanya bergantung pada client, bukan isConnected
 
   const handleCreateAuction = (nft: NFT) => {
     setSelectedNFT(nft)
@@ -113,15 +114,6 @@ export default function Home() {
     refetchAuctions()
     fetchAllNFTs()
   }
-
-  // Load data bahkan saat wallet belum terkoneksi untuk preview
-  useEffect(() => {
-    if (client) {
-      console.log('🔄 Fetching all NFTs and refreshing auctions for preview...')
-      fetchAllNFTs()
-      refetchAuctions()
-    }
-  }, [client, fetchAllNFTs, refetchAuctions])
 
   if (!isConnected) {
     return (
@@ -252,80 +244,80 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </main>
 
-            {/* Footer */}
-            <footer className="border-t border-purple-500/20 bg-card/50 backdrop-blur-sm">
-              <div className="max-w-7xl mx-auto px-6 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                  {/* Brand Section */}
-                  <div className="md:col-span-2">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
-                        <span className="text-xl">🌸</span>
-                      </div>
-                      <span className="text-xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                        BloomBid
-                      </span>
-                    </div>
-                    <p className="text-muted-foreground mb-4 leading-relaxed">
-                      Premium NFT Auction Marketplace yang menghubungkan creator dan collector dalam ekosistem blockchain yang aman dan transparan.
-                    </p>
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center hover:bg-purple-500/20 transition-colors cursor-pointer">
-                        <span className="text-sm">📱</span>
-                      </div>
-                      <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center hover:bg-blue-500/20 transition-colors cursor-pointer">
-                        <span className="text-sm">🐦</span>
-                      </div>
-                      <div className="w-8 h-8 bg-cyan-500/10 rounded-full flex items-center justify-center hover:bg-cyan-500/20 transition-colors cursor-pointer">
-                        <span className="text-sm">💬</span>
-                      </div>
-                    </div>
+        {/* Footer - keluar dari main dan container agar full width */}
+        <footer className="border-t border-purple-500/20 bg-card/50 backdrop-blur-sm w-full">
+          <div className="w-full px-6 py-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {/* Brand Section */}
+              <div className="md:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
+                    <span className="text-xl">🌸</span>
                   </div>
-
-                  {/* Features */}
-                  <div>
-                    <h4 className="font-bold mb-4 text-foreground">Features</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="hover:text-purple-500 cursor-pointer transition-colors">🎨 Mint NFTs</li>
-                      <li className="hover:text-purple-500 cursor-pointer transition-colors">🔨 Create Auctions</li>
-                      <li className="hover:text-purple-500 cursor-pointer transition-colors">💎 Bid & Collect</li>
-                      <li className="hover:text-purple-500 cursor-pointer transition-colors">📊 Analytics</li>
-                    </ul>
-                  </div>
-
-                  {/* Support */}
-                  <div>
-                    <h4 className="font-bold mb-4 text-foreground">Support</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="hover:text-blue-500 cursor-pointer transition-colors">📖 Documentation</li>
-                      <li className="hover:text-blue-500 cursor-pointer transition-colors">🆘 Help Center</li>
-                      <li className="hover:text-blue-500 cursor-pointer transition-colors">💬 Community</li>
-                      <li className="hover:text-blue-500 cursor-pointer transition-colors">🐛 Report Bug</li>
-                    </ul>
-                  </div>
+                  <span className="text-xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    BloomBid
+                  </span>
                 </div>
-
-                {/* Bottom Bar */}
-                <div className="border-t border-purple-500/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                  <p className="text-sm text-muted-foreground">
-                    © 2025 BloomBid. Built with 💜 for the NFT community.
-                  </p>
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                    <span className="hover:text-purple-500 cursor-pointer transition-colors">Privacy Policy</span>
-                    <span className="hover:text-purple-500 cursor-pointer transition-colors">Terms of Service</span>
-                    <div className="flex items-center gap-2">
-                      <span>Powered by</span>
-                      <div className="px-2 py-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded border border-purple-500/20">
-                        <span className="text-xs font-medium">Lisk Sepolia</span>
-                      </div>
-                    </div>
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  Premium NFT Auction Marketplace yang menghubungkan creator dan collector dalam ekosistem blockchain yang aman dan transparan.
+                </p>
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center hover:bg-purple-500/20 transition-colors cursor-pointer">
+                    <span className="text-sm">📱</span>
+                  </div>
+                  <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center hover:bg-blue-500/20 transition-colors cursor-pointer">
+                    <span className="text-sm">🐦</span>
+                  </div>
+                  <div className="w-8 h-8 bg-cyan-500/10 rounded-full flex items-center justify-center hover:bg-cyan-500/20 transition-colors cursor-pointer">
+                    <span className="text-sm">💬</span>
                   </div>
                 </div>
               </div>
-            </footer>
+
+              {/* Features */}
+              <div>
+                <h4 className="font-bold mb-4 text-foreground">Features</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="hover:text-purple-500 cursor-pointer transition-colors">🎨 Mint NFTs</li>
+                  <li className="hover:text-purple-500 cursor-pointer transition-colors">🔨 Create Auctions</li>
+                  <li className="hover:text-purple-500 cursor-pointer transition-colors">💎 Bid & Collect</li>
+                  <li className="hover:text-purple-500 cursor-pointer transition-colors">📊 Analytics</li>
+                </ul>
+              </div>
+
+              {/* Support */}
+              <div>
+                <h4 className="font-bold mb-4 text-foreground">Support</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="hover:text-blue-500 cursor-pointer transition-colors">📖 Documentation</li>
+                  <li className="hover:text-blue-500 cursor-pointer transition-colors">🆘 Help Center</li>
+                  <li className="hover:text-blue-500 cursor-pointer transition-colors">💬 Community</li>
+                  <li className="hover:text-blue-500 cursor-pointer transition-colors">🐛 Report Bug</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom Bar */}
+            <div className="border-t border-purple-500/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-sm text-muted-foreground">
+                © 2025 BloomBid. Built with 💜 for the NFT community.
+              </p>
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                <span className="hover:text-purple-500 cursor-pointer transition-colors">Privacy Policy</span>
+                <span className="hover:text-purple-500 cursor-pointer transition-colors">Terms of Service</span>
+                <div className="flex items-center gap-2">
+                  <span>Powered by</span>
+                  <div className="px-2 py-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded border border-purple-500/20">
+                    <span className="text-xs font-medium">Lisk Sepolia</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </main>
+        </footer>
         <BackToTop />
       </>
     )
@@ -459,6 +451,78 @@ export default function Home() {
           </Tabs>
         </div>
       </main>
+
+      {/* Footer - sama untuk semua state */}
+      <footer className="border-t border-purple-500/20 bg-card/50 backdrop-blur-sm w-full">
+        <div className="w-full px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Brand Section */}
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🌸</span>
+                </div>
+                <span className="text-xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  BloomBid
+                </span>
+              </div>
+              <p className="text-muted-foreground mb-4 leading-relaxed">
+                Premium NFT Auction Marketplace yang menghubungkan creator dan collector dalam ekosistem blockchain yang aman dan transparan.
+              </p>
+              <div className="flex gap-4">
+                <div className="w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center hover:bg-purple-500/20 transition-colors cursor-pointer">
+                  <span className="text-sm">📱</span>
+                </div>
+                <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center hover:bg-blue-500/20 transition-colors cursor-pointer">
+                  <span className="text-sm">🐦</span>
+                </div>
+                <div className="w-8 h-8 bg-cyan-500/10 rounded-full flex items-center justify-center hover:bg-cyan-500/20 transition-colors cursor-pointer">
+                  <span className="text-sm">💬</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Features */}
+            <div>
+              <h4 className="font-bold mb-4 text-foreground">Features</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="hover:text-purple-500 cursor-pointer transition-colors">🎨 Mint NFTs</li>
+                <li className="hover:text-purple-500 cursor-pointer transition-colors">🔨 Create Auctions</li>
+                <li className="hover:text-purple-500 cursor-pointer transition-colors">💎 Bid & Collect</li>
+                <li className="hover:text-purple-500 cursor-pointer transition-colors">📊 Analytics</li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-bold mb-4 text-foreground">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="hover:text-blue-500 cursor-pointer transition-colors">📖 Documentation</li>
+                <li className="hover:text-blue-500 cursor-pointer transition-colors">🆘 Help Center</li>
+                <li className="hover:text-blue-500 cursor-pointer transition-colors">💬 Community</li>
+                <li className="hover:text-blue-500 cursor-pointer transition-colors">🐛 Report Bug</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-purple-500/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              © 2025 BloomBid. Built with 💜 for the NFT community.
+            </p>
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <span className="hover:text-purple-500 cursor-pointer transition-colors">Privacy Policy</span>
+              <span className="hover:text-purple-500 cursor-pointer transition-colors">Terms of Service</span>
+              <div className="flex items-center gap-2">
+                <span>Powered by</span>
+                <div className="px-2 py-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded border border-purple-500/20">
+                  <span className="text-xs font-medium">Lisk Sepolia</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       <BackToTop />
 

@@ -13,10 +13,13 @@ export function useContract() {
   const { client } = usePanna()
 
   const contractInfo = useMemo(() => {
+    // Pastikan client dan account dalam state yang konsisten
+    const isValidConnection = activeAccount && client && activeAccount.address
+    
     return {
       client: client || null,
       account: activeAccount || null,
-      isConnected: !!activeAccount && !!client,
+      isConnected: !!isValidConnection,
       address: activeAccount?.address || null,
       contractAddress: BLOOM_NFT_CONTRACT_ADDRESS,
     }
