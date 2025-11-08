@@ -7,6 +7,7 @@ interface AuctionGridProps {
   auctions: AuctionDisplay[]
   loading?: boolean
   userAddress?: string
+  showConnectPrompt?: boolean
   onBid?: (auction: AuctionDisplay) => void
   onEnd?: (auction: AuctionDisplay) => void
   onCancel?: (auction: AuctionDisplay) => void
@@ -16,6 +17,7 @@ export function AuctionGrid({
   auctions, 
   loading, 
   userAddress,
+  showConnectPrompt,
   onBid, 
   onEnd, 
   onCancel 
@@ -58,6 +60,7 @@ export function AuctionGrid({
           key={auction.tokenId}
           auction={auction}
           userAddress={userAddress}
+          showConnectPrompt={showConnectPrompt}
           onBid={onBid}
           onEnd={onEnd}
           onCancel={onCancel}

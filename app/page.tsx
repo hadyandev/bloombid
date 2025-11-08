@@ -111,6 +111,15 @@ export default function Home() {
     fetchAllNFTs()
   }
 
+  // Load data bahkan saat wallet belum terkoneksi untuk preview
+  useEffect(() => {
+    if (client) {
+      console.log('🔄 Fetching all NFTs and refreshing auctions for preview...')
+      fetchAllNFTs()
+      refetchAuctions()
+    }
+  }, [client, fetchAllNFTs, refetchAuctions])
+
   if (!isConnected) {
     return (
       <>
@@ -120,26 +129,28 @@ export default function Home() {
           <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}} />
           
-          <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
-            <div className="flex flex-col items-center justify-center text-center space-y-8 animate-scale-in">
-              <div className="relative w-40 h-40 rounded-3xl flex items-center justify-center animate-glow-pulse">
+          <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
+            {/* Hero Section */}
+            <div className="text-center py-12 space-y-8 animate-scale-in">
+              <div className="relative w-40 h-40 rounded-3xl flex items-center justify-center mx-auto animate-glow-pulse">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 rounded-3xl animate-gradient" />
-                <span className="text-7xl relative z-10 animate-float">🔐</span>
+                <span className="text-7xl relative z-10 animate-float">🌸</span>
               </div>
               
-              <div className="space-y-4 max-w-2xl">
-                <h2 className="text-5xl font-black bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              <div className="space-y-4 max-w-2xl mx-auto">
+                <h1 className="text-5xl font-black bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
                   Welcome to BloomBid
-                </h2>
+                </h1>
                 <p className="text-xl text-muted-foreground">
                   Premium NFT Auction Marketplace
                 </p>
                 <p className="text-muted-foreground max-w-md mx-auto pt-2">
-                  Connect wallet lo buat mulai mint NFT, create auction, atau bid di marketplace yang paling kece!
+                  Jelajahi koleksi NFT dan auction terbaru! Connect wallet lo buat mulai mint NFT, create auction, atau bid di marketplace yang paling kece!
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 w-full max-w-4xl">
+              {/* Feature Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 w-full max-w-4xl mx-auto">
                 <div className="p-6 rounded-2xl bg-card/80 backdrop-blur-sm border-2 border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-1">
                   <div className="text-4xl mb-4">🎨</div>
                   <h3 className="font-bold text-lg mb-2">Buat NFT</h3>
@@ -159,6 +170,157 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* Preview Tabs */}
+            <Tabs defaultValue="all-nfts" className="space-y-8">
+              <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-2 bg-card/80 backdrop-blur-sm border-2 border-purple-500/20 p-1.5 h-auto shadow-lg">
+                <TabsTrigger 
+                  value="all-nfts"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white py-3 text-sm font-semibold"
+                >
+                  🌐 All NFTs
+                  <span className="block text-xs mt-0.5">({allNFTs.length})</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="live-auctions"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white py-3 text-sm font-semibold"
+                >
+                  ⚡ Live Auctions
+                  <span className="block text-xs mt-0.5">({activeAuctions.length})</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all-nfts" className="space-y-6 animate-fade-in">
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-purple-500/20 shadow-xl">
+                  <h2 className="text-3xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                    All NFTs
+                  </h2>
+                  <p className="text-muted-foreground">Explore semua NFT yang ada di marketplace</p>
+                </div>
+                <NFTGrid
+                  nfts={allNFTs}
+                  userAddress={account?.address}
+                  loading={nftLoading}
+                  showConnectPrompt={true}
+                  onCreateAuction={handleCreateAuction}
+                />
+              </TabsContent>
+
+              <TabsContent value="live-auctions" className="space-y-6 animate-fade-in">
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-500/20 shadow-xl">
+                  <h2 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    Live Auctions
+                  </h2>
+                  <p className="text-muted-foreground">Auction yang sedang berlangsung - Connect wallet untuk bid!</p>
+                </div>
+                <AuctionGrid
+                  auctions={activeAuctions}
+                  loading={auctionLoading}
+                  userAddress={account?.address}
+                  showConnectPrompt={true}
+                  onBid={handleBid}
+                  onEnd={handleEndAuction}
+                  onCancel={handleCancelAuction}
+                />
+              </TabsContent>
+            </Tabs>
+
+            {/* Connect Wallet CTA */}
+            <div className="text-center py-16">
+              <div className="bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-cyan-500/10 backdrop-blur-sm rounded-3xl p-8 border-2 border-purple-500/20 shadow-2xl max-w-lg mx-auto relative overflow-hidden">
+                {/* Background decorations */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/20 rounded-full blur-xl" />
+                
+                <div className="relative z-10">
+                  <div className="text-5xl mb-6 animate-pulse">🌸</div>
+                  <h3 className="text-2xl font-black bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent mb-3">
+                    Ready to Get Started?
+                  </h3>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                    Connect wallet lo buat mulai petualangan NFT! Mint karya seni digital, create auction yang menguntungkan, atau bid NFT favorit lo.
+                  </p>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20">
+                    <span className="text-lg">👆</span>
+                    <span className="text-sm text-muted-foreground font-medium">
+                      Klik "Connect Wallet" di header atas untuk mulai
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <footer className="border-t border-purple-500/20 bg-card/50 backdrop-blur-sm">
+              <div className="max-w-7xl mx-auto px-6 py-12">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                  {/* Brand Section */}
+                  <div className="md:col-span-2">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
+                        <span className="text-xl">🌸</span>
+                      </div>
+                      <span className="text-xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                        BloomBid
+                      </span>
+                    </div>
+                    <p className="text-muted-foreground mb-4 leading-relaxed">
+                      Premium NFT Auction Marketplace yang menghubungkan creator dan collector dalam ekosistem blockchain yang aman dan transparan.
+                    </p>
+                    <div className="flex gap-4">
+                      <div className="w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center hover:bg-purple-500/20 transition-colors cursor-pointer">
+                        <span className="text-sm">📱</span>
+                      </div>
+                      <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center hover:bg-blue-500/20 transition-colors cursor-pointer">
+                        <span className="text-sm">🐦</span>
+                      </div>
+                      <div className="w-8 h-8 bg-cyan-500/10 rounded-full flex items-center justify-center hover:bg-cyan-500/20 transition-colors cursor-pointer">
+                        <span className="text-sm">💬</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Features */}
+                  <div>
+                    <h4 className="font-bold mb-4 text-foreground">Features</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="hover:text-purple-500 cursor-pointer transition-colors">🎨 Mint NFTs</li>
+                      <li className="hover:text-purple-500 cursor-pointer transition-colors">🔨 Create Auctions</li>
+                      <li className="hover:text-purple-500 cursor-pointer transition-colors">💎 Bid & Collect</li>
+                      <li className="hover:text-purple-500 cursor-pointer transition-colors">📊 Analytics</li>
+                    </ul>
+                  </div>
+
+                  {/* Support */}
+                  <div>
+                    <h4 className="font-bold mb-4 text-foreground">Support</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li className="hover:text-blue-500 cursor-pointer transition-colors">📖 Documentation</li>
+                      <li className="hover:text-blue-500 cursor-pointer transition-colors">🆘 Help Center</li>
+                      <li className="hover:text-blue-500 cursor-pointer transition-colors">💬 Community</li>
+                      <li className="hover:text-blue-500 cursor-pointer transition-colors">🐛 Report Bug</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Bottom Bar */}
+                <div className="border-t border-purple-500/10 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                  <p className="text-sm text-muted-foreground">
+                    © 2025 BloomBid. Built with 💜 for the NFT community.
+                  </p>
+                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                    <span className="hover:text-purple-500 cursor-pointer transition-colors">Privacy Policy</span>
+                    <span className="hover:text-purple-500 cursor-pointer transition-colors">Terms of Service</span>
+                    <div className="flex items-center gap-2">
+                      <span>Powered by</span>
+                      <div className="px-2 py-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded border border-purple-500/20">
+                        <span className="text-xs font-medium">Lisk Sepolia</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </footer>
           </div>
         </main>
       </>

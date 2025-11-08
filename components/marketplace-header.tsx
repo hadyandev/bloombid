@@ -1,6 +1,6 @@
 'use client'
 
-import { Sparkles, Zap } from "lucide-react"
+import { Zap } from "lucide-react"
 import { LoginButton, useActiveAccount, liskSepolia } from "panna-sdk"
 import { Button } from "./ui/button"
 
@@ -18,7 +18,7 @@ export function MarketplaceHeader({ onMintClick }: MarketplaceHeaderProps) {
         <div className="flex items-center gap-3">
           <div className="relative w-12 h-12 rounded-xl flex items-center justify-center shadow-lg animate-glow-pulse overflow-hidden group cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 animate-gradient" />
-            <Sparkles className="w-6 h-6 text-white relative z-10 group-hover:scale-110 transition-transform duration-300" />
+            <span className="text-2xl relative z-10 group-hover:scale-110 transition-transform duration-300">🌸</span>
           </div>
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
@@ -37,7 +37,7 @@ export function MarketplaceHeader({ onMintClick }: MarketplaceHeaderProps) {
               onClick={onMintClick} 
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <Sparkles className="w-4 h-4 mr-2" />
+              <span className="mr-2">🎨</span>
               Buat NFT
             </Button>
           )}

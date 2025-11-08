@@ -7,11 +7,12 @@ interface NFTGridProps {
   nfts: NFT[]
   userAddress?: string
   loading?: boolean
+  showConnectPrompt?: boolean
   onCreateAuction?: (nft: NFT) => void
   onViewDetails?: (nft: NFT) => void
 }
 
-export function NFTGrid({ nfts, userAddress, loading, onCreateAuction, onViewDetails }: NFTGridProps) {
+export function NFTGrid({ nfts, userAddress, loading, showConnectPrompt, onCreateAuction, onViewDetails }: NFTGridProps) {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -50,6 +51,7 @@ export function NFTGrid({ nfts, userAddress, loading, onCreateAuction, onViewDet
           key={nft.tokenId}
           nft={nft}
           userAddress={userAddress}
+          showConnectPrompt={showConnectPrompt}
           onCreateAuction={onCreateAuction}
           onViewDetails={onViewDetails}
         />

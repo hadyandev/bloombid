@@ -12,6 +12,7 @@ import { formatDistanceToNow } from 'date-fns'
 interface AuctionCardProps {
   auction: AuctionDisplay
   userAddress?: string
+  showConnectPrompt?: boolean
   onBid?: (auction: AuctionDisplay) => void
   onEnd?: (auction: AuctionDisplay) => void
   onCancel?: (auction: AuctionDisplay) => void
@@ -22,7 +23,7 @@ const formatAddress = (address: string) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function AuctionCard({ auction, userAddress, onBid, onEnd, onCancel }: AuctionCardProps) {
+export function AuctionCard({ auction, userAddress, showConnectPrompt, onBid, onEnd, onCancel }: AuctionCardProps) {
   const [timeLeft, setTimeLeft] = useState('')
   const [isActive, setIsActive] = useState(auction.active)
   
@@ -135,40 +136,52 @@ export function AuctionCard({ auction, userAddress, onBid, onEnd, onCancel }: Au
       </CardContent>
 
       <CardFooter className="p-4 pt-0 flex gap-2">
-        {isActive && !isOwner && onBid && (
+        {/* Show connect wallet prompt if user not connected but needs to interact */}
+        {showConnectPrompt && !userAddress && isActive ? (
           <Button
-            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
-            onClick={() => onBid(auction)}
+            className="flex-1 bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed"
+            disabled
           >
-            <Hammer className="w-4 h-4 mr-1" />
-            Place Bid
+            🔐 Connect Wallet to Bid
           </Button>
-        )}
-        
-        {canEnd && (isOwner || isHighestBidder) && onEnd && (
-          <Button
-            className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
-            onClick={() => onEnd(auction)}
-          >
-            <Trophy className="w-4 h-4 mr-1" />
-            End
-          </Button>
-        )}
+        ) : (
+          <>
+            {isActive && !isOwner && onBid && (
+              <Button
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                onClick={() => onBid(auction)}
+              >
+                <Hammer className="w-4 h-4 mr-1" />
+                Place Bid
+              </Button>
+            )}
+            
+            {canEnd && (isOwner || isHighestBidder) && onEnd && (
+              <Button
+                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
+                onClick={() => onEnd(auction)}
+              >
+                <Trophy className="w-4 h-4 mr-1" />
+                End
+              </Button>
+            )}
 
-        {canCancel && onCancel && (
-          <Button
-            className="flex-1 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg"
-            onClick={() => onCancel(auction)}
-          >
-            <X className="w-4 h-4 mr-1" />
-            Cancel
-          </Button>
-        )}
+            {canCancel && onCancel && (
+              <Button
+                className="flex-1 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg"
+                onClick={() => onCancel(auction)}
+              >
+                <X className="w-4 h-4 mr-1" />
+                Cancel
+              </Button>
+            )}
 
-        {isOwner && auction.active && !canEnd && (
-          <Button className="flex-1 bg-muted/50" disabled variant="outline">
-            Your Auction
-          </Button>
+            {isOwner && auction.active && !canEnd && (
+              <Button className="flex-1 bg-muted/50" disabled variant="outline">
+                Your Auction
+              </Button>
+            )}
+          </>
         )}
       </CardFooter>
     </Card>

@@ -11,6 +11,7 @@ interface NFTCardProps {
   nft: NFT
   userAddress?: string
   showActions?: boolean
+  showConnectPrompt?: boolean
   onCreateAuction?: (nft: NFT) => void
   onViewDetails?: (nft: NFT) => void
 }
@@ -20,7 +21,7 @@ const formatAddress = (address: string) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function NFTCard({ nft, userAddress, showActions = true, onCreateAuction, onViewDetails }: NFTCardProps) {
+export function NFTCard({ nft, userAddress, showActions = true, showConnectPrompt, onCreateAuction, onViewDetails }: NFTCardProps) {
   const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || ''
   
   const isCreator = userAddress && nft.creator.toLowerCase() === userAddress.toLowerCase()
@@ -82,32 +83,45 @@ export function NFTCard({ nft, userAddress, showActions = true, onCreateAuction,
 
         {showActions && (
           <div className="flex gap-2 pt-2">
-            {canCreateAuction && onCreateAuction && (
+            {/* Show connect wallet prompt if user not connected but show actions */}
+            {showConnectPrompt && !userAddress ? (
               <Button
                 size="sm"
-                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
-                onClick={() => {
-                  console.log('🎯 Button Create Auction clicked untuk NFT #', nft.tokenId)
-                  console.log('👤 Creator:', nft.creator)
-                  console.log('🏠 Owner:', nft.owner)
-                  console.log('📝 Opening modal untuk input auction details...')
-                  onCreateAuction(nft)
-                }}
+                className="flex-1 bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed"
+                disabled
               >
-                <Hammer className="w-4 h-4 mr-1" />
-                Auction
+                🔐 Connect Wallet to Interact
               </Button>
-            )}
-            {onViewDetails && (
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex-1 hover:bg-purple-500/10 hover:border-purple-500/50"
-                onClick={() => onViewDetails(nft)}
-              >
-                <Eye className="w-4 h-4 mr-1" />
-                View
-              </Button>
+            ) : (
+              <>
+                {canCreateAuction && onCreateAuction && (
+                  <Button
+                    size="sm"
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+                    onClick={() => {
+                      console.log('🎯 Button Create Auction clicked untuk NFT #', nft.tokenId)
+                      console.log('👤 Creator:', nft.creator)
+                      console.log('🏠 Owner:', nft.owner)
+                      console.log('📝 Opening modal untuk input auction details...')
+                      onCreateAuction(nft)
+                    }}
+                  >
+                    <Hammer className="w-4 h-4 mr-1" />
+                    Auction
+                  </Button>
+                )}
+                {onViewDetails && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 hover:bg-purple-500/10 hover:border-purple-500/50"
+                    onClick={() => onViewDetails(nft)}
+                  >
+                    <Eye className="w-4 h-4 mr-1" />
+                    View
+                  </Button>
+                )}
+              </>
             )}
           </div>
         )}
